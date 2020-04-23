@@ -64,40 +64,74 @@
 
 
 
-import React from 'react';
+import React, { Component } from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Search from "./components/Search";
 
 // add import of mockSearch described in step (33);
+import mockSearch from './api/mockSearch';
 
 // step (40) - add a constant called PAGE, displaying results
-
+const PAGE = 20;
 // step (12) convert the App 'dumb component' function to a 'smart component' using class syntax.
-export default function App() {
+export default class App extends Component {
 
     // add step (13) here - adding constructor
+    constructor(props) {
+      super(props)
+      this.state = {
+          items: [],
+          offset: 0,
+          isFetching: false,
+          query: 'Led Zeppelin',
+          token: null,
+      }
+    }
     // Much later, add the state variable as described in steps (38), (39)
     // constructor(){}
 
     //  step (34) add async componentDidMount();
-    //  step (35) add an call a new method in -this- class called loadNextPage();
-
+    async componentDidMount() {
+    //  step (35) add and call a new method in -this- class called loadNextPage();
+        await this.loadNextPage();
+    }
+    
     // step (36) add loadNextPage() method
-    // step (37) add newItems const
-
+    async loadNextPage() {
+        // step (37) add newItems const
+        const newItems = await mockSearch({
+            offset: this.state.offset,
+            limit: PAGE,
+            q: this.state.query,
+            token: this.state.token,
+        });
+        console.log(newItems);
+    }
+    
     // add step (14) here - adding handleSearchChange(event) event handler function
+    handleSearchChange(text) {
+      this.setState({
+          query: text,
+          items: [],
+          offset: 0,
+      }, () => {
+          // callback stub.
+      });
+    }
     // for step (16) once you add the handleSearchChange handler, set the state to be the value of what is inputted.
     // handleSearchChange(){}
 
     // step (12) requires you to convert the return statement to a render() method
     // step (15) requires you to adjust the <Search /> tag for the render method
-    return (
+    render() {
+      return (
         <View style={styles.container}>
             <Text>React Native Creative - Spotify Player</Text>
-            <Search/>
+            <Search onChange={text => this.handleSearchChange(text)} />
         </View>
-    );
-
+      );
+    }
+    
 // step (12) closes its curly brace here
 }
 

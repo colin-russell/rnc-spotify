@@ -41,11 +41,18 @@ return [...Array(limit).keys()].map(mapFunc);
 
 
 // insert code for step (27) here
-
+const timeout = ms => new Promise(res => setTimeout(res, ms))
 // a sample image
 const sampleImage = "https://www.edapostol.com/img/lz4.jpg";
 
 // add code for step (28) here
+export default async({offset, limit, q}) => { 
+    await timeout(300);
+    console.log("q:", q);
+    let mapFunc = i => ({ id: i + offset, title: `Song ${q} ${i + offset}`, sampleImage });
+    return [...Array(limit).keys()].map(mapFunc);
+    // returns a new Array of size 'limit' where each element is mapped using the mapFunc
+}
 // add the arguments for the async() method as in step (29) below
 // then complete the  code within the async function as described in (30) and (31)
 

@@ -26,6 +26,7 @@
 import React, {Component} from 'react';
 
 import {View, Text, TextInput, StyleSheet} from 'react-native';
+import { object } from 'prop-types';
 
 
 export default class Search extends Component {
@@ -33,18 +34,29 @@ export default class Search extends Component {
     // step (24) initializes state in the constructor
     constructor(props) {
         super(props);
+
+        this.state = {
+          text: '',
+        }
     }
 
     // step (21) add a handleChangeText() event handler function, accepting text as argument
     // step (22) adds a destructured const onChange equal to this.props
     // step (23) add the setState to handleChangeText();
-    // handleChangeText(){}
+    handleChangeText(text) {
+      const {onChange} = this.props;
+      this.setState({
+          text,
+      }, () => {
+          onChange(text);
+      });
+    }
 
 
-    render() {
+    render() {                                                      
 
         // perform step (18) here
-
+        const {text} = this.state;
 
         // step (19) change the value attr of TextInput in the return statement
         // step (20) add an onChange Attribute to TextInput
@@ -53,12 +65,11 @@ export default class Search extends Component {
                 <Text style={styles.text}>Artist Search:</Text>
                 <TextInput
                     style={styles.input}
-                    value='Search Here'
+                    value={text}
+                    onChangeText={text => this.handleChangeText}
                 />
             </View>
         );
-
-
     }
 
 }
