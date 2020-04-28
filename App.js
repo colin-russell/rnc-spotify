@@ -52,12 +52,12 @@ import {StyleSheet, Text, View} from 'react-native';
 import Search from './components/Search';
 
 // step (42) comment out the import
-import mockSearch from "./api/mockSearch";
+// import mockSearch from "./api/mockSearch";
 
 // step (44) add import statement to import spotifyToken.js
-
+import spotifyToken from './api/spotifyToken';
 // step (53) import spotifySearch
-
+import spotifySearch from './api/spotifySearch';
 
 const PAGE = 20;
 
@@ -78,22 +78,30 @@ export default class App extends Component {
     // an opinion on using async with componentDidMount() is found here
     // https://stackoverflow.com/questions/47970276/is-using-async-componentdidmount-good
     async componentDidMount() {
+        await this.refreshToken();
         await this.loadNextPage();
     }
 
     // step (45) here
-    /* async refreshToken(){
-        // step (46), (47) and (48)
+    async refreshToken(){
+        const newToken = await spotifyToken();
+        this.setState({
+            token: newToken,
+        });
     }
-    */
 
 
     async loadNextPage() {
-
         // add step (49) here;
+        if (this.state.isFetching) {
+            console.log('already fetching');
+            return;
+        }
+      
+        this.setState({ isFetching: true });
 
         // way later, do step (54) here
-        const newItems = await mockSearch({
+        const newItems = await spotifySearch({
             offset: this.state.offset,
             limit: PAGE,
             q: this.state.query,
@@ -101,6 +109,15 @@ export default class App extends Component {
         });
 
         console.log(newItems);
+
+        this.setState({
+            isFetching: false,
+            offset: this.state.offset + PAGE,
+            items: [
+              ...this.state.items,
+              ...newItems,
+            ],
+          });
     }
 
     handleSearchChange(text){
@@ -111,6 +128,7 @@ export default class App extends Component {
         }, () => {
             // callback stub.
             // step (51) here
+            this.loadNextPage();
         });
     }
 

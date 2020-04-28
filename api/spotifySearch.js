@@ -46,16 +46,41 @@
 
 
 // step (1) here
-
+const apiPrefix = 'https://api.spotify.com/v1';
 
 // step (2) here
-/*
-
-export default async (// step (3) here)  => {
+export default async ({offset, limit, q, token,})  => {
     // step (4), (5), (6), (7), (8), (9) , (10), (11)  here
+    const searchUrl = `${apiPrefix}/search?type=track&limit=${limit}&offset=${offset}&q=${encodeURIComponent(q)}`;
+    console.log(`stating search, searchURL is ${searchUrl}`);
 
+    const params = {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+
+    const res = await fetch(searchUrl, params);
+    const jsonObj = await res.json();
+    console.log(`the json response is ${jsonObj}`);
+    if (!res.ok) {
+        return [];
+    }
+
+    const {
+        tracks: {
+          items,
+        }
+      } = jsonObj;
+
+    console.log('Search has ended.');
+    return items.map(item => ({
+        id: item.id,
+        title: item.name,
+        imageUri: item.album.images ? item.album.images.url : undefined,
+    }));
 };
 
-*/
 
 

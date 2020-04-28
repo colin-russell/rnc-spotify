@@ -70,16 +70,33 @@
 import {decode as atob, encode as btoa} from 'base-64'
 
 // add constant apiPrefix described in step (1)
-
+const apiPrefix = 'https://accounts.spotify.com/api'
 // step (2), (3) assign constants for your clientID and clientSecret
 // note the best practice is to put this in an .env file
-
-
+const clientID = 'd4bca1501b6541b99c9341d7c681f5e3';
+const clientSecret = '7d99ec5e24e04646b331a6ab09ef8e59';
 
 // step (4) here
-
+const base64Cred = btoa(clientID.concat(':', clientSecret));
 
 // steps (5) below; steps  (6), (7), (8)  inside the async code block
-// export default sync() => {}
+export default async() => {
+  console.log('Retrieving token...');
+
+  const apiTokenUrl = apiPrefix.concat('/token');
+  const params = {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${base64Cred}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'grant_type=client_credentials'
+  };
+  const res = await fetch(apiTokenUrl, params);
+  const jsonObj = await res.json();
+  const theToken = jsonObj.access_token;
+  console.log(`Successfully retrieved token: ${theToken}`);
+  return theToken;
+}
 
 
