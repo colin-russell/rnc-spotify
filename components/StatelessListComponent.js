@@ -2,7 +2,7 @@
 
 /*
 * 1. Import the following from 'react-native'; FlatList, View, and Text
-* 2. Create a dumb component in ES6 (export default() =>() ) tha returns an instance of a FlatList component tag.
+* 2. Create a dumb component in ES6 (export default() =>() ) that returns an instance of a FlatList component tag.
 * 3. Modify the default function's arguments to accept { items, onEndReached }
     - items represent all the potential information
     - each object will be called -info-. inside info, it will contain an item object that contains title and other information
@@ -33,16 +33,28 @@
 import React, { Component } from 'react';
 
 // step (1) here
-
+import { FlatList, View, Text } from 'react-native';
+import { render } from 'react-dom';
 
 // step (7) here. import your item renderer
-
+import Item from './Item';
 
 // step (11) here. import the pre-built separator component.
-
+import Separator from './Separator';
 
 // step (2)
-// export default (// step (3) add an argument here ) => (
+export default ({ items, onEndReached }) => (
+    <View>
+        <FlatList
+        data={items}
+        renderItem={ (info) => <Item item={info.item} />  }
+        keyExtractor={ (item, index) => item.id.toString() }
+        onEndReached={onEndReached}
+        listEmptyComponent={ f => f }
+        ItemSeparatorComponent={() => <Separator />}
+        />
+    </View>
+);
 //
 // proceed with steps (4) and (5) here
 // you will replace your renderItem output in step (4) with your item renderer in step (7) to perform step (8)
@@ -50,5 +62,4 @@ import React, { Component } from 'react';
 //  with <Item item={info.item} />
 //
 // you will add the separator attribute for the FlatList component at the end (step 11)
-// );
 

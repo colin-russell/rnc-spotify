@@ -55,13 +55,13 @@ import {StyleSheet, Text, View} from 'react-native';
 import Search from './components/Search';
 
 // step (62) here
-// import mockSearch from "./api/mockSearch";
+import mockSearch from "./api/mockSearch";
 
 import spotifyToken from "./api/spotifyToken";
 import spotifySearch from "./api/spotifySearch";
 
 // step (61) here
-
+import StatelessListComponent from './components/StatelessListComponent';
 
 
 const PAGE = 20;
@@ -80,6 +80,7 @@ export default class App extends Component {
             isFetching: false,
             query: 'Led Zeppelin',
             token: null,
+            songs: [],
         };
 
     }
@@ -89,9 +90,17 @@ export default class App extends Component {
 
     async componentDidMount() {
         // step (65) - create a mock query for now.
+        const newSongs = await mockSearch({
+            offset: 0,
+            limit: 100,
+            q: 'Led Zeppelin',
+        });
 
-        await this.refreshToken();
-        await this.loadNextPage();
+        this.setState({
+            songs: newSongs,
+        });
+        // await this.refreshToken();
+        // await this.loadNextPage();
     }
 
     async refreshToken() {
@@ -126,7 +135,7 @@ export default class App extends Component {
 
     handleSearchChange(text){
         // step (59) here
-
+        console.log('handleSearchChange text: ' + text);
         this.setState({
             query: text,
             items: [],
@@ -137,11 +146,14 @@ export default class App extends Component {
     }
 
     // step (70) goes here, adding a handleEndReached() method
+    handleEndReached() {
+        this.loadNextPage();
+    }
 
     render() {
         // step 66
         const { songs } = this.state;
-
+        console.log('songs ' + songs.length);
         // step (67) adds an instance of StatelessListComponent in the return block, below.
         // steps (68) through (70) add attributes to StatelessListComponent, below.
 
@@ -149,6 +161,10 @@ export default class App extends Component {
                 <View style={styles.container}>
                     <Text>React Native Creative - Spotify Player</Text>
                     <Search onChange={text => this.handleSearchChange(text)} />
+                    {
+                        (this.isFetching && songs.length > 0)?null:
+                            <StatelessListComponent items={songs} onEndReached={ () => this.handleEndReached() } />
+                    }
                 </View>
             );
 
@@ -160,8 +176,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: 'stretch',
+        justifyContent: 'flex-start',
         margin: 10,
         marginTop: 50,
     },

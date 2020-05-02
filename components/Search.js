@@ -33,6 +33,7 @@ export default class Search extends Component {
             text: newText,
         }, () => {
             // step (5) here
+            onChange && onChange(newText);
         });
     }
 
@@ -48,6 +49,7 @@ export default class Search extends Component {
                     style={styles.input}
                     value={text}
                     onChangeText={newText => this.handleChangeText(newText)}
+                    placeholder={'search for'}
                 />
             </View>
         );
