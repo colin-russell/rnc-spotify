@@ -16,7 +16,7 @@
 import React, {Component} from 'react';
 
 // step (81) here
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, ActivityIndicator} from 'react-native';
 
 import Search from './components/Search';
 
@@ -117,7 +117,7 @@ export default class App extends Component {
                     <Text>React Native Creative - Spotify Player</Text>
                     <Search onChange={text => this.handleSearchChange(text)} />
                     {
-                        (isFetching && items.length === 0)?null:
+                        (isFetching && items.length === 0)?<ActivityIndicator/>:
                             <StatelessListComponent items={items} onEndReached={ () => this.handleEndReached() } />
                     }
                 </View>
